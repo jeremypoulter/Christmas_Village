@@ -2,10 +2,15 @@
 uint8_t pwm[] = {3,5,6,9,10,11};
 #define PWM_LENGTH 6
 
+typedef enum {
+  ChannelState_Off,
+  ChannelState_On
+} ChannelState;
+
+ChannelState state[PWM_LENGTH] = {0};
+
 #define FADE_TIME           1000
-#define DELAY_BETWEEN_FADES 50
-#define DELAY_ALL_ON        1000
-#define DELAY_ALL_OFF       1000
+#define MAX_DLELAY          1000
 
 void setup() {
   // put your setup code here, to run once:
@@ -14,21 +19,21 @@ void setup() {
   }
 }
 
-void loop() {
-  // put your main code here, to run repeatedly: 
-  for(int i = 0; i < PWM_LENGTH; i++) {
-    fadeIn(pwm[i], FADE_TIME);
-    delay(DELAY_BETWEEN_FADES);
+void loop() 
+{
+  int channel = random(PWM_LENGTH);
+  switch(state[channel])
+  {
+    case ChannelState_Off:
+      fadeIn(pwn[channel], FADE_TIME);
+      state[channel] = ChannelState_On;
+      break;
+    case ChannelState_On:
+      fadeOut(pwn[channel], FADE_TIME);
+      state[channel] = ChannelState_Of;
+      break;
   }
-
-  delay(DELAY_ALL_ON);
-
-  for(int i = 0; i < PWM_LENGTH; i++) {
-    fadeOut(pwm[i], FADE_TIME);
-    delay(DELAY_BETWEEN_FADES);
-  }
-
-  delay(DELAY_ALL_OFF);
+  delay(random(MAX_DELAY));
 }
 
 void fadeIn(int pin, int time)

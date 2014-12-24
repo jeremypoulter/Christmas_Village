@@ -7,15 +7,18 @@ typedef enum {
   ChannelState_On
 } ChannelState;
 
-ChannelState state[PWM_LENGTH] = {0};
+ChannelState state[PWM_LENGTH];
 
 #define FADE_TIME           1000
-#define MAX_DLELAY          1000
+#define MAX_DELAY           1000
 
 void setup() {
   // put your setup code here, to run once:
-  for(int i = 0; i < PWM_LENGTH; i++) {
+  for(int i = 0; i < PWM_LENGTH; i++) 
+  {
     pinMode(pwm[i], OUTPUT);
+    digitalWrite(pwm[i], HIGH);
+    state[i] = ChannelState_On;
   }
 }
 
@@ -25,12 +28,12 @@ void loop()
   switch(state[channel])
   {
     case ChannelState_Off:
-      fadeIn(pwn[channel], FADE_TIME);
+      fadeIn(pwm[channel], FADE_TIME);
       state[channel] = ChannelState_On;
       break;
     case ChannelState_On:
-      fadeOut(pwn[channel], FADE_TIME);
-      state[channel] = ChannelState_Of;
+      fadeOut(pwm[channel], FADE_TIME);
+      state[channel] = ChannelState_Off;
       break;
   }
   delay(random(MAX_DELAY));

@@ -1,6 +1,25 @@
 
+#include <Arduino.h>
+
+extern void fadeIn(int pin, int time);
+extern void fadeOut(int pin, int time);
+
+
+#ifdef AVR
+
 uint8_t pwm[] = {3,5,6,9,10,11};
 #define PWM_LENGTH 6
+#define MAX_PWM 255
+
+#else
+
+uint8_t pwm[] = {2,4,5,12,13,14};
+#define PWM_LENGTH 6
+#define MAX_PWM PWMRANGE
+
+#define WIFI_Connect
+
+#endif
 
 typedef enum {
   ChannelState_Off,
@@ -41,8 +60,8 @@ void loop()
 
 void fadeIn(int pin, int time)
 {
-  int delayTime = time / 255;
-  for(int i = 0; i < 256; i++) 
+  int delayTime = max(1, time / MAX_PWM);
+  for(int i = 0; i <= MAX_PWM; i++) 
   {
     analogWrite(pin, i);
     delay(delayTime);
@@ -51,8 +70,8 @@ void fadeIn(int pin, int time)
 
 void fadeOut(int pin, int time)
 {
-  int delayTime = time / 255;
-  for(int i = 255; i >= 0; i--) 
+  int delayTime = max(1, time / MAX_PWM);
+  for(int i = MAX_PWM; i >= 0; i--) 
   {
     analogWrite(pin, i);
     delay(delayTime);
